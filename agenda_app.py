@@ -7,12 +7,12 @@ class AgendaApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Agenda Escolar")
-        self.root.geometry("800x600")  # Hacemos la ventana más grande
+        self.root.geometry("1500x700")  # Hacemos la ventana más grande
         self.root.configure(bg="#F0F8FF")
         
         # Establecer el ícono de la aplicación
         try:
-            self.root.iconbitmap("icono.ico")  # Cambia "icono.ico" por la ruta de tu archivo de ícono
+            self.root.iconbitmap("icono.ico") # Cambia "icono.ico" por la ruta de tu archivo de ícono
         except Exception as e:
             print(f"No se pudo cargar el ícono: {e}")
         
