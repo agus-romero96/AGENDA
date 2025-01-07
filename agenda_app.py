@@ -5,13 +5,14 @@ from db import verificar_usuario, registrar_usuario, agregar_evento, obtener_eve
 import datetime
 
 class AgendaApp:
-    def _init_(self):
+    def __init__(self):  # Corregido el nombre del constructor
         self.root = tk.Tk()
         self.root.title("Agenda Personal")
         self.root.geometry("900x700")
         self.root.configure(bg="#EAF8F8")  # Fondo claro y moderno
 
         self.style = ttk.Style()
+        self.style.theme_use("default")  # Asegurar compatibilidad
         self.style.configure("TButton", font=("Helvetica", 11), padding=6)
         self.style.configure("TLabel", font=("Helvetica", 12))
 
@@ -169,5 +170,5 @@ class AgendaApp:
             widget.destroy()
 
 # Ejecutar la aplicación
-if __name__ == "_main_":
+if __name__ == "__main__":  # Corrección del identificador
     AgendaApp()
