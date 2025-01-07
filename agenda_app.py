@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import PhotoImage
 from tkinter import ttk, messagebox
 from db import verificar_usuario, registrar_usuario, agregar_evento, obtener_eventos, guardar_materias, obtener_materias, guardar_deber, obtener_deberes
 import datetime
