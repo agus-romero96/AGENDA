@@ -10,8 +10,16 @@ class AgendaApp:
         self.root.geometry("800x600")  # Hacemos la ventana más grande
         self.root.configure(bg="#F0F8FF")
         
+        # Establecer el ícono de la aplicación
+        try:
+            self.root.iconbitmap("icono.ico")  # Cambia "icono.ico" por la ruta de tu archivo de ícono
+        except Exception as e:
+            print(f"No se pudo cargar el ícono: {e}")
+        
         self.mostrar_login()
         self.root.mainloop()
+
+    # --- Ventanas de la Aplicación ---
 
     def mostrar_menu_eventos(self, usuario):
         self.limpiar_ventana()
