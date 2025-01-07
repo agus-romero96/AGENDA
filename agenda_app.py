@@ -1,15 +1,19 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 from tkcalendar import Calendar  # Calendario
 from db import verificar_usuario, registrar_usuario, agregar_evento, obtener_eventos
 import datetime
 
 class AgendaApp:
-    def __init__(self):
+    def _init_(self):
         self.root = tk.Tk()
         self.root.title("Agenda Personal")
-        self.root.geometry("500x500")
-        self.root.configure(bg="#F0F8FF")  # Fondo claro
+        self.root.geometry("900x700")
+        self.root.configure(bg="#EAF8F8")  # Fondo claro y moderno
+
+        self.style = ttk.Style()
+        self.style.configure("TButton", font=("Helvetica", 11), padding=6)
+        self.style.configure("TLabel", font=("Helvetica", 12))
 
         self.mostrar_login()
         self.root.mainloop()
@@ -18,78 +22,110 @@ class AgendaApp:
     def mostrar_login(self):
         self.limpiar_ventana()
 
-        tk.Label(self.root, text="Iniciar Sesión", font=("Arial", 18), bg="#F0F8FF").pack(pady=20)
+        frame = tk.Frame(self.root, bg="#EAF8F8", padx=20, pady=20)
+        frame.pack(expand=True)
 
-        tk.Label(self.root, text="Usuario:", bg="#F0F8FF").pack()
-        self.usuario_entry = tk.Entry(self.root)
-        self.usuario_entry.pack()
+        # Encabezado
+        tk.Label(frame, text="¡Bienvenido!", font=("Helvetica", 22, "bold"), bg="#EAF8F8", fg="#1C7C7D").pack(pady=10)
+        tk.Label(frame, text="Inicia sesión para acceder a tu agenda", font=("Helvetica", 14), bg="#EAF8F8").pack(pady=5)
 
-        tk.Label(self.root, text="Contraseña:", bg="#F0F8FF").pack()
-        self.contrasena_entry = tk.Entry(self.root, show="*")
-        self.contrasena_entry.pack()
+        # Campo de usuario
+        tk.Label(frame, text="Usuario", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=5, anchor="w")
+        self.usuario_entry = ttk.Entry(frame, width=30)
+        self.usuario_entry.pack(pady=5)
 
-        tk.Button(self.root, text="Iniciar Sesión", command=self.iniciar_sesion, bg="#ADD8E6").pack(pady=10)
-        tk.Button(self.root, text="Registrar Usuario", command=self.mostrar_registro, bg="#90EE90").pack()
+        # Campo de contraseña
+        tk.Label(frame, text="Contraseña", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=5, anchor="w")
+        self.contrasena_entry = ttk.Entry(frame, show="*", width=30)
+        self.contrasena_entry.pack(pady=5)
+
+        # Botones
+        ttk.Button(frame, text="Iniciar Sesión", command=self.iniciar_sesion, style="TButton").pack(pady=10)
+        ttk.Button(frame, text="Registrarse", command=self.mostrar_registro).pack()
 
     # --- Ventana de Registro ---
     def mostrar_registro(self):
         self.limpiar_ventana()
 
-        tk.Label(self.root, text="Registrar Usuario", font=("Arial", 18), bg="#F0F8FF").pack(pady=20)
+        frame = tk.Frame(self.root, bg="#EAF8F8", padx=20, pady=20)
+        frame.pack(expand=True)
 
-        tk.Label(self.root, text="Nuevo Usuario:", bg="#F0F8FF").pack()
-        self.nuevo_usuario_entry = tk.Entry(self.root)
-        self.nuevo_usuario_entry.pack()
+        # Encabezado
+        tk.Label(frame, text="¡Hola!", font=("Helvetica", 22, "bold"), bg="#EAF8F8", fg="#1C7C7D").pack(pady=10)
+        tk.Label(frame, text="Regístrate para crear tu cuenta", font=("Helvetica", 14), bg="#EAF8F8").pack(pady=5)
 
-        tk.Label(self.root, text="Contraseña:", bg="#F0F8FF").pack()
-        self.nueva_contrasena_entry = tk.Entry(self.root, show="*")
-        self.nueva_contrasena_entry.pack()
+        # Campos de registro
+        tk.Label(frame, text="Nuevo Usuario", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=5, anchor="w")
+        self.nuevo_usuario_entry = ttk.Entry(frame, width=30)
+        self.nuevo_usuario_entry.pack(pady=5)
 
-        tk.Button(self.root, text="Registrar", command=self.registrar_usuario, bg="#90EE90").pack(pady=10)
-        tk.Button(self.root, text="Volver", command=self.mostrar_login, bg="#FFB6C1").pack()
+        tk.Label(frame, text="Contraseña", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=5, anchor="w")
+        self.nueva_contrasena_entry = ttk.Entry(frame, show="*", width=30)
+        self.nueva_contrasena_entry.pack(pady=5)
+
+        # Botones
+        ttk.Button(frame, text="Registrar", command=self.registrar_usuario).pack(pady=10)
+        ttk.Button(frame, text="Volver", command=self.mostrar_login).pack()
 
     # --- Ventana Principal ---
     def mostrar_menu_eventos(self, usuario):
         self.limpiar_ventana()
 
-        tk.Label(self.root, text=f"Bienvenido, {usuario}", font=("Arial", 18), bg="#F0F8FF").pack(pady=20)
+        frame = tk.Frame(self.root, bg="#EAF8F8", padx=20, pady=20)
+        frame.pack(fill=tk.BOTH, expand=True)
 
-        tk.Button(self.root, text="Agregar Evento", command=lambda: self.mostrar_agregar_evento(usuario), bg="#ADD8E6").pack(pady=5)
-        tk.Button(self.root, text="Ver Eventos", command=lambda: self.mostrar_eventos(usuario), bg="#ADD8E6").pack(pady=5)
-        tk.Button(self.root, text="Cerrar Sesión", command=self.mostrar_login, bg="#FFB6C1").pack(pady=10)
+        # Encabezado
+        tk.Label(frame, text=f"Hola, {usuario}", font=("Helvetica", 22, "bold"), bg="#EAF8F8", fg="#1C7C7D").pack(pady=10)
+        tk.Label(frame, text="¿Qué deseas hacer hoy?", font=("Helvetica", 14), bg="#EAF8F8").pack(pady=5)
+
+        # Botones principales
+        ttk.Button(frame, text="Agregar Evento", command=lambda: self.mostrar_agregar_evento(usuario)).pack(pady=10)
+        ttk.Button(frame, text="Ver Eventos", command=lambda: self.mostrar_eventos(usuario)).pack(pady=10)
+        ttk.Button(frame, text="Cerrar Sesión", command=self.mostrar_login).pack(pady=20)
 
     # --- Ventana para Agregar Evento ---
     def mostrar_agregar_evento(self, usuario):
         self.limpiar_ventana()
 
-        tk.Label(self.root, text="Agregar Evento", font=("Arial", 18), bg="#F0F8FF").pack(pady=20)
+        frame = tk.Frame(self.root, bg="#EAF8F8", padx=20, pady=20)
+        frame.pack(fill=tk.BOTH, expand=True)
 
-        tk.Label(self.root, text="Evento:", bg="#F0F8FF").pack()
-        self.evento_entry = tk.Entry(self.root)
-        self.evento_entry.pack()
+        # Encabezado
+        tk.Label(frame, text="Agregar Evento", font=("Helvetica", 22, "bold"), bg="#EAF8F8", fg="#1C7C7D").pack(pady=10)
 
-        # Calendario para seleccionar fecha
-        tk.Label(self.root, text="Seleccionar Fecha:", bg="#F0F8FF").pack()
-        self.calendario = Calendar(self.root, date_pattern="yyyy-mm-dd")
+        # Campo para el nombre del evento
+        tk.Label(frame, text="Nombre del Evento", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=5, anchor="w")
+        self.evento_entry = ttk.Entry(frame, width=30)
+        self.evento_entry.pack(pady=5)
+
+        # Calendario
+        tk.Label(frame, text="Seleccionar Fecha", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=10)
+        self.calendario = Calendar(frame, date_pattern="yyyy-mm-dd")
         self.calendario.pack(pady=10)
 
-        tk.Button(self.root, text="Guardar", command=lambda: self.guardar_evento(usuario), bg="#90EE90").pack(pady=10)
-        tk.Button(self.root, text="Volver", command=lambda: self.mostrar_menu_eventos(usuario), bg="#FFB6C1").pack()
+        # Botones
+        ttk.Button(frame, text="Guardar", command=lambda: self.guardar_evento(usuario)).pack(pady=10)
+        ttk.Button(frame, text="Volver", command=lambda: self.mostrar_menu_eventos(usuario)).pack()
 
     # --- Ventana para Ver Eventos ---
     def mostrar_eventos(self, usuario):
         self.limpiar_ventana()
 
-        tk.Label(self.root, text="Tus Eventos", font=("Arial", 18), bg="#F0F8FF").pack(pady=20)
+        frame = tk.Frame(self.root, bg="#EAF8F8", padx=20, pady=20)
+        frame.pack(fill=tk.BOTH, expand=True)
 
+        # Encabezado
+        tk.Label(frame, text="Tus Eventos", font=("Helvetica", 22, "bold"), bg="#EAF8F8", fg="#1C7C7D").pack(pady=10)
+
+        # Mostrar eventos
         eventos = obtener_eventos(usuario)
         if not eventos:
-            tk.Label(self.root, text="No hay eventos programados.", bg="#F0F8FF").pack()
+            tk.Label(frame, text="No hay eventos programados.", font=("Helvetica", 12), bg="#EAF8F8").pack(pady=10)
         else:
-            for evento, dia in eventos:
-                tk.Label(self.root, text=f"{dia}: {evento}", bg="#F0F8FF").pack()
+            for evento, fecha in eventos:
+                tk.Label(frame, text=f"{fecha}: {evento}", font=("Helvetica", 12), bg="#EAF8F8").pack(anchor="w", pady=2)
 
-        tk.Button(self.root, text="Volver", command=lambda: self.mostrar_menu_eventos(usuario), bg="#FFB6C1").pack(pady=10)
+        ttk.Button(frame, text="Volver", command=lambda: self.mostrar_menu_eventos(usuario)).pack(pady=20)
 
         # Simular notificación
         self.notificar_eventos(eventos)
@@ -132,7 +168,6 @@ class AgendaApp:
         for widget in self.root.winfo_children():
             widget.destroy()
 
-
 # Ejecutar la aplicación
-if __name__ == "__main__":
+if __name__ == "_main_":
     AgendaApp()
