@@ -3,20 +3,44 @@ from tkinter import PhotoImage
 from tkinter import ttk, messagebox
 from db import verificar_usuario, registrar_usuario, agregar_evento, obtener_eventos, guardar_materias, obtener_materias, guardar_deber, obtener_deberes
 import datetime
+from PIL import Image, ImageTk  # Necesario para cargar y mostrar la imagen
+import os  # Para manejar rutas relativas
 
 class AgendaApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Agenda Escolar")
-        self.root.geometry("1500x700")  # Hacemos la ventana más grande
+        self.root.geometry("800x600")  # Hacemos la ventana más grande
         self.root.configure(bg="#F0F8FF")
+        # Usar un Canvas para crear un fondo de dos colores
+        self.canvas = tk.Canvas(self.root, width=800, height=600)
+        self.canvas.pack(fill="both", expand=True)
         
+        # Dividir el fondo en dos colores
+        self.canvas.create_rectangle(0, 0, 400, 600, fill="blue", outline="blue")  # Mitad izquierda azul
+        self.canvas.create_rectangle(400, 0, 800, 600, fill="red", outline="red")  # Mitad derecha roja
         # Establecer el ícono de la aplicación
         try:
             self.root.iconbitmap("icono.ico") # Cambia "icono.ico" por la ruta de tu archivo de ícono
         except Exception as e:
             print(f"No se pudo cargar el ícono: {e}")
+        # Obtener la ruta absoluta del directorio del script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         
+        # Construir la ruta completa para la imagen
+        image_path = os.path.join(script_dir, "utclogo.jpg")
+        
+        # Cargar y mostrar la imagen
+        try:
+            image = Image.open(image_path)  # Cargar la imagen
+            image = image.resize((150, 150))  # Ajustar tamaño de la imagen si es necesario
+            self.photo = ImageTk.PhotoImage(image)  # Convertir la imagen a un formato compatible con Tkinter
+            
+            # Crear un widget Label para mostrar la imagen
+            self.image_label = tk.Label(self.root, image=self.photo, bg="#F0F8FF")
+            self.image_label.place(x=650, y=10)  # Colocar la imagen en la parte superior derecha
+        except Exception as e:
+            print(f"No se pudo cargar la imagen: {e}")
         self.mostrar_login()
         self.root.mainloop()
 
@@ -324,18 +348,22 @@ class AgendaApp:
     def mostrar_login(self):
         self.limpiar_ventana()
 
-        tk.Label(self.root, text="Iniciar Sesión", font=("Arial", 18), bg="#F0F8FF").pack(pady=20)
+        frame = tk.Frame(self.root, bg="#F0F8FF")
+        frame.pack(expand=True, fill=tk.BOTH)
 
-        tk.Label(self.root, text="Usuario:", bg="#F0F8FF").pack()
-        self.usuario_entry = tk.Entry(self.root)
-        self.usuario_entry.pack()
+        tk.Label(frame, text="UTC La Maná\nDiario Escolar", font=("Arial", 30), bg="#F0F8FF").pack(pady=120, anchor=tk.CENTER)
+       # tk.Label(frame, text="Diario Escolar", font=("Arial", 25), bg="#F0F8FF").pack(pady=1, anchor=tk.CENTER)
 
-        tk.Label(self.root, text="Contraseña:", bg="#F0F8FF").pack()
-        self.contrasena_entry = tk.Entry(self.root, show="*")
-        self.contrasena_entry.pack()
+        tk.Label(frame, text="Usuario:", font=("Arial", 20), bg="#F0F8FF").pack(anchor=tk.CENTER)
+        self.usuario_entry = tk.Entry(frame, font=("Arial", 16), width=30)
+        self.usuario_entry.pack(anchor=tk.CENTER)
 
-        tk.Button(self.root, text="Iniciar Sesión", command=self.iniciar_sesion, bg="#ADD8E6").pack(pady=10)
-        tk.Button(self.root, text="Registrar Usuario", command=self.mostrar_registro, bg="#90EE90").pack()
+        tk.Label(frame, text="Contraseña:", font=("Arial", 20), bg="#F0F8FF").pack(anchor=tk.CENTER)
+        self.contrasena_entry = tk.Entry(frame, show="*", font=("Arial", 16), width=30)
+        self.contrasena_entry.pack(anchor=tk.CENTER)
+
+        tk.Button(frame, text="Iniciar Sesión", command=self.iniciar_sesion, bg="#ADD8E6").pack(pady=10, anchor=tk.CENTER)
+        tk.Button(frame, text="Registrar Usuario", command=self.mostrar_registro, bg="#90EE90").pack(anchor=tk.CENTER)
 
     # --- Ventana de Registro ---
     def mostrar_registro(self):
